@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import study.smtp.authenticationNumber.AuthenticationService;
 
 import java.util.Random;
 
@@ -12,7 +14,9 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender emailSender;
+    private final AuthenticationService authenticationService;
 
+    @Transactional
     public void sendEmail(String toEmail){
         SimpleMailMessage emailForm = createEmailForm(toEmail);
 
@@ -23,21 +27,8 @@ public class EmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(toEmail);
         message.setSubject("작심삼칩 인증번호");
-        message.setText(createAuthenticationNumber());
+        message.setText(authenticationService.createAuthenticationNumber(toEmail));
 
         return message;
-    }
-
-    public String createAuthenticationNumber(){
-        Random random = new Random();
-        StringBuffer number = new StringBuffer();
-
-        for(int i = 0; i < 6; i++){
-            // 10 미만의 랜덤 정수
-            int randomNum = random.nextInt(10);
-            number.append(randomNum);
-        }
-
-        return number.toString();
     }
 }
