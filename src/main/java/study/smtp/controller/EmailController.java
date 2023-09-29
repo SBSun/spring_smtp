@@ -19,4 +19,11 @@ public class EmailController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping("/verifications")
+    public ResponseEntity<Boolean> verificationsEmail(@RequestParam String email, @RequestParam String authenticationNumber){
+        boolean isVerified = emailService.verificationsAuthenticationNumber(email, authenticationNumber);
+
+        return ResponseEntity.ok(isVerified);
+    }
 }
