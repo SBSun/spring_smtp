@@ -53,8 +53,7 @@ public class EmailService {
     @Transactional
     public boolean verificationsAuthenticationNumber(String email, String authenticationNumber){
         String findAuthenticationNumber = redisService.findByKey(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."))
-                .toString();
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
         if(findAuthenticationNumber.equals(authenticationNumber)){
             redisService.deleteByKey(email);

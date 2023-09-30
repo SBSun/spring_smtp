@@ -2,6 +2,7 @@ package study.smtp.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,16 +14,16 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    public void setValues(String key, Object value, long expiration){
+    public void setValues(String key, String value, long expiration){
         redisTemplate.opsForValue().set(key, value);
         redisTemplate.expire(key, expiration, TimeUnit.MILLISECONDS);
     }
 
-    public Optional<Object> findByKey(String key){
-        ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        Object value = valueOperations.get(key);
+    public Optional<String> findByKey(String key){
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(key);
 
         if(value == null){
             return Optional.empty();
