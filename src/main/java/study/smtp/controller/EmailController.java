@@ -1,5 +1,6 @@
 package study.smtp.controller;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +15,22 @@ public class EmailController {
     private final EmailService emailService;
 
     @PostMapping
-    public ResponseEntity sendEmail(@RequestParam String email){
+    public ResponseEntity sendEmail(@RequestParam String email) throws MessagingException {
         emailService.sendEmail(email);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/verifications")
-    public ResponseEntity<Boolean> verificationsEmail(@RequestParam String email, @RequestParam String authenticationNumber){
-        boolean isVerified = emailService.verificationsAuthenticationNumber(email, authenticationNumber);
+    @PostMapping("/authentication")
+    public ResponseEntity authenticationEmail(@RequestParam String email){
+        emailService.authenticationEmail(email);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/verification")
+    public ResponseEntity<Boolean> verificationEmail(@RequestParam String email){
+        boolean isVerified = emailService.verificationEmail(email);
 
         return ResponseEntity.ok(isVerified);
     }
