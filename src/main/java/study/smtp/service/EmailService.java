@@ -7,8 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.server.DelegatingServerHttpResponse;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.util.Random;
 
@@ -20,6 +23,7 @@ public class EmailService {
     private long authCodeExpirationMillis;
 
     private final JavaMailSender emailSender;
+    private final SpringTemplateEngine templateEngine;
     private final RedisService redisService;
 
     @Transactional
@@ -31,18 +35,18 @@ public class EmailService {
 
     private MimeMessage createEmailForm(String toEmail) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
-        message.addRecipients(MimeMessage.RecipientType.TO, toEmail);
-        message.setSubject("작심삼칩 인증 메일");
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        String body = "";
-        body += "<h1> 안녕하세요. 작심삼칩입니다.</h1>";
-        body += "<br>";
-        body += "<p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.<p>";
-        body += "<a href='http://localhost:8080/emails/authentication?email=" + toEmail + "'>인증 링크</a>";
-        
-        message.setText(body, "utf-8", "html");
+        helper.setTo(toEmail);
+        helper.setSubject("작심삼칩 인증 메일");
 
-        redisService.setValues(toEmail, "false", authCodeExpirationMillis);
+        // 템플릿에 전달할 데이터 설정
+        Context context = new Context();
+        context.setVariable("email", toEmail);
+
+        // 메일 내용 설정 : 템플릿 프로세스
+        String html = templateEngine.process("email", context);
+        helper.setText(html, true);
 
         return message;
     }

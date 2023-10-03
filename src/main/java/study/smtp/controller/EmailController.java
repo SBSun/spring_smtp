@@ -21,7 +21,7 @@ public class EmailController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/authentication")
+    @GetMapping("/authentication")
     public ResponseEntity authenticationEmail(@RequestParam String email){
         emailService.authenticationEmail(email);
 

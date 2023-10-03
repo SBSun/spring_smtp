@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Send Email</title>
+</head>
+<body>
+    <h1> 안녕하세요. 작심삼칩입니다.</h1>
+    <br>
+    <p>아래 링크를 클릭하면 이메일 인증이 완료됩니다.<p>
+    <a th:href="@{http://localhost:8080/emails/authentication(email = ${email})}">인증 링크</a>
+</body>
+</html>
