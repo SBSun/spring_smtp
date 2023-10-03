@@ -45,7 +45,7 @@ public class EmailService {
         context.setVariable("email", toEmail);
 
         // 메일 내용 설정 : 템플릿 프로세스
-        String html = templateEngine.process("email", context);
+        String html = templateEngine.process("authentication", context);
         helper.setText(html, true);
 
         return message;

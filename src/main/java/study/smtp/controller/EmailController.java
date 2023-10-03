@@ -1,10 +1,12 @@
 package study.smtp.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import study.smtp.service.EmailService;
 
 @RestController
@@ -22,10 +24,10 @@ public class EmailController {
     }
 
     @GetMapping("/authentication")
-    public ResponseEntity authenticationEmail(@RequestParam String email){
+    public ModelAndView authenticationEmail(@RequestParam String email, HttpServletResponse response){
         emailService.authenticationEmail(email);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ModelAndView("success");
     }
 
     @GetMapping("/verification")
